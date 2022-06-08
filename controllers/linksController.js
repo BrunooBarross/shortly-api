@@ -13,3 +13,18 @@ export async function shortenUrl(req, res) {
         res.sendStatus(500);
     }
 }
+
+export async function getUrlId(req,res){
+    const { id } = req.params;
+    try {
+        const consult = await connection.query(` SELECT * FROM "shortenedLinks" WHERE id = $1`, [id]);
+        if (consult.rowCount === 0) {
+            return res.sendStatus(404);
+        }
+        delete consult.rows[0].visitCount;
+        delete consult.rows[0].userId;
+        res.status(200).send(consult.rows[0]);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
