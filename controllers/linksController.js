@@ -28,3 +28,21 @@ export async function getUrlId(req,res){
         res.sendStatus(500);
     }
 }
+
+export async function getShortUrl(req, res) {
+    const { shortUrl } = req.params;
+    try {
+        const consult = await connection.query(`SELECT * FROM "shortenedLinks" WHERE "shortUrl" = $1`, [shortUrl]);
+        if (consult.rowCount === 0) {
+            return res.sendStatus(404);
+        }
+        await connection.query(`
+            UPDATE "shortenedLinks"
+            SET "visitCount" = "visitCount" + 1
+            WHERE  "shortUrl" = $1`, [shortUrl]);
+        res.redirect(consult.rows[0].url);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}

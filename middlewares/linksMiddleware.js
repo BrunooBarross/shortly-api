@@ -27,3 +27,16 @@ export async function validateUrlId(req, res, next) {
     }
     next();
 }
+
+export async function validateShortUrl(req, res, next) {
+    const paramSchema = joi.object({
+        shortUrl: joi.string().required()
+    });
+
+    const { error } = paramSchema.validate(req.params);
+
+    if (error) {
+        return res.status(422).send(error.details);
+    }
+    next();
+}
