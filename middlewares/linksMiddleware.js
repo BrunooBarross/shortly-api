@@ -40,3 +40,22 @@ export async function validateShortUrl(req, res, next) {
     }
     next();
 }
+
+export async function validateDeleteId(req, res, next){
+    const { id } = req.params;
+    const { userId } = res.locals;
+    try {
+        const consult = await connection.query(`SELECT * FROM "shortenedLinks" WHERE id = $1`, [id]);
+        if (consult.rowCount === 0) {
+            return res.sendStatus(404);
+        }
+        if( consult.rows[0].userId !== userId){
+            return res.sendStatus(401);
+        }
+        res.locals.urlId = consult.rows[0].id;
+        next();
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}

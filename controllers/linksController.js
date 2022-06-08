@@ -46,3 +46,13 @@ export async function getShortUrl(req, res) {
         res.sendStatus(500);
     }
 }
+
+export async function deleteUrl(req,res){
+    const { urlId } = res.locals;
+    try {
+        await connection.query(`DELETE FROM "shortenedLinks" WHERE id = $1`, [urlId]);
+        res.sendStatus(204);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
