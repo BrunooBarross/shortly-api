@@ -5,7 +5,7 @@ export async function validateSignUp(req, res, next) {
 
     const userSchema = joi.object({
         name: joi.string().required(),
-        email: joi.string().required(),
+        email: joi.string().email().required(),
         password: joi.string().required(),
         confirmPassword: joi.ref('password')
     });
@@ -34,7 +34,7 @@ export async function validateSignUp(req, res, next) {
 export async function validateSignIn(req, res, next) {
 
     const userSchema = joi.object({
-        email: joi.string().required(),
+        email: joi.string().email().required(),
         password: joi.string().required(),
     });
 
