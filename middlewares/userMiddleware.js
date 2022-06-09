@@ -2,6 +2,7 @@ import joi from 'joi';
 import connection from '../db.js'
 
 export async function validateClienteId(req, res, next) {
+    const sessionUserId = parseInt(res.locals.userId);
     const convertNumber = { id: parseInt(req.params.id)}
     const paramSchema = joi.object({
         id: joi.number().required()
@@ -18,6 +19,10 @@ export async function validateClienteId(req, res, next) {
         
         if( insert.rowCount === 0 ){
             return res.sendStatus(404);
+        }
+
+        if ( insert.rows[0].id !== sessionUserId){
+            return res.sendStatus(409);
         }
         next();
     } catch (error) {
