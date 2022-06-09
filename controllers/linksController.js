@@ -18,7 +18,7 @@ export async function shortenUrl(req, res) {
 }
 
 export async function getUrlId(req,res){
-    const { id } = req.params;
+    const id = parseInt(req.params.id)
     try {
         const consult = await connection.query(` SELECT * FROM "shortenedLinks" WHERE id = $1`, [id]);
         if (consult.rowCount === 0) {
@@ -26,6 +26,7 @@ export async function getUrlId(req,res){
         }
         delete consult.rows[0].visitCount;
         delete consult.rows[0].userId;
+        delete consult.rows[0].createdAt;
         res.status(200).send(consult.rows[0]);
     } catch (error) {
         res.sendStatus(500);

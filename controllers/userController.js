@@ -1,7 +1,7 @@
 import connection from '../db.js'
 
 export async function getUser(req, res) {
-    const { id } = req.params;
+    const id = parseInt(req.params.id);
     try {
         const selectUser = await connection.query(`
         SELECT u.id, u.name, SUM (s."visitCount") as "visitCount"

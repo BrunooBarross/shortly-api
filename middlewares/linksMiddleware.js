@@ -16,11 +16,12 @@ export function validateUrl(req, res, next) {
 }
 
 export async function validateUrlId(req, res, next) {
+    const convertNumber = { id: parseInt(req.params.id)}
     const paramSchema = joi.object({
         id: joi.number().required()
     });
 
-    const { error } = paramSchema.validate(req.params);
+    const { error } = paramSchema.validate(convertNumber);
 
     if (error) {
         return res.status(422).send(error.details);
