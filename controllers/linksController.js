@@ -1,15 +1,18 @@
 import connection from '../db.js'
 import { nanoid } from 'nanoid'
+import dayjs from 'dayjs';
 
 export async function shortenUrl(req, res) {
     const { url } = req.body;
     const { userId } = res.locals;
+    const date = dayjs().locale('en-us').format('YYYY-MM-DD');
     const shortUrl = nanoid();
     try {
-        const insert = await connection.query(`INSERT INTO "shortenedLinks" ("shortUrl", url, "visitCount", "userId") 
-            VALUES ( $1, $2, $3, $4)`, [shortUrl, url, 0, userId]);
+        const insert = await connection.query(`INSERT INTO "shortenedLinks" ("shortUrl", url, "visitCount", "userId", "createdAt") 
+            VALUES ( $1, $2, $3, $4, $5)`, [shortUrl, url, 0, userId, date]);
         res.status(201).send({ shortUrl: shortUrl });
     } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     }
 }
