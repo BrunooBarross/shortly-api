@@ -40,12 +40,14 @@ export async function getUser(req, res) {
 export async function getRanking(req, res) {
     try {
         const selectRanking = await connection.query(`
-        SELECT u.id, u.name, COUNT (s."shortUrl") as "linksCount", SUM (s."visitCount") as "visitCount"
+        SELECT u.id, u.name, COUNT (s."shortUrl") as "linksCount", 
+        CASE WHEN SUM (s."visitCount") IS NULL THEN 0 ELSE SUM (s."visitCount") END as "visitCount"
         FROM users u
-        JOIN "shortenedLinks" s ON s."userId" = u.id  
+        LEFT JOIN "shortenedLinks" s ON s."userId" = u.id  
         GROUP BY u.id
         ORDER BY "visitCount" DESC 
         LIMIT 10;`);
+       
         res.status(200).send(selectRanking.rows);
     } catch (error) {
         res.sendStatus(500);
