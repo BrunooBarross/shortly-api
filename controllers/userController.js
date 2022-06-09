@@ -6,16 +6,24 @@ export async function getUser(req, res) {
         const selectUser = await connection.query(`
         SELECT u.id, u.name, SUM (s."visitCount") as "visitCount"
         FROM users u
-        JOIN "shortenedLinks" s ON s."userId" = u.id  
+        LEFT JOIN "shortenedLinks" s ON s."userId" = u.id  
         WHERE u.id = $1
         GROUP BY u.id;`
         ,[id]);
+
         const selectLinks = await connection.query(`SELECT s.id, s."shortUrl", s.url, s."visitCount" from "shortenedLinks" as s WHERE "userId" = $1;`,[id]);
-        
+    
         if(selectLinks.rowCount === 0){
-            return res.status(200).send(selectUser.rows[0]);
+            const result = 
+            {
+                id:selectUser.rows[0].id, 
+                name:selectUser.rows[0].name, 
+                visitCount: 0, 
+                shortenedUrls: []
+            };
+            return res.status(200).send(result);
         }
-        
+
         const result = {
             id:selectUser.rows[0].id, 
             name:selectUser.rows[0].name, 
