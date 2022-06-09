@@ -6,7 +6,7 @@ export async function shortenUrl(req, res) {
     const { url } = req.body;
     const { userId } = res.locals;
     const date = dayjs().locale('en-us').format('YYYY-MM-DD');
-    const shortUrl = nanoid();
+    const shortUrl = nanoid(8);
     try {
         const insert = await connection.query(`INSERT INTO "shortenedLinks" ("shortUrl", url, "visitCount", "userId", "createdAt") 
             VALUES ( $1, $2, $3, $4, $5)`, [shortUrl, url, 0, userId, date]);
