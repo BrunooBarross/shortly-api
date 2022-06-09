@@ -11,12 +11,18 @@ export async function getUser(req, res) {
         GROUP BY u.id;`
         ,[id]);
         const selectLinks = await connection.query(`SELECT s.id, s."shortUrl", s.url, s."visitCount" from "shortenedLinks" as s WHERE "userId" = $1;`,[id]);
+        
+        if(selectLinks.rowCount === 0){
+            return res.status(200).send(selectUser.rows[0]);
+        }
+        
         const result = {
             id:selectUser.rows[0].id, 
             name:selectUser.rows[0].name, 
             visitCount: selectUser.rows[0].visitCount, 
             shortenedUrls: selectLinks.rows
         };
+        
         res.status(200).send(result);
     } catch (error) {
         res.sendStatus(500);
