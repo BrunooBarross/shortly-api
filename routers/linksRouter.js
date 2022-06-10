@@ -8,6 +8,6 @@ const linksRouter = Router();
 linksRouter.post('/urls/shorten', validateToken, validateUrl, shortenUrl);
 linksRouter.get('/urls/:id', validateUrlId, getUrlId);
 linksRouter.get('/urls/open/:shortUrl', validateShortUrl, getShortUrl);
-linksRouter.delete('/urls/:id',validateUrlId, validateToken, validateDeleteId, deleteUrl, deleteUrl);
+linksRouter.delete('/urls/:id',validateUrlId, validateToken, validateDeleteId, deleteUrl);
 
 export default linksRouter;
